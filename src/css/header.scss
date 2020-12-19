@@ -1,0 +1,222 @@
+@import 'variables.scss';
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+
+  padding: 0.6rem 1.2rem;
+  background-color: $primaryLight;
+}
+
+
+// TITLES
+.header-title a {
+  text-decoration: none;
+  color: $white;
+  font-weight: bold;
+  font-size: 28px;
+}
+
+.header-tagline {
+  // font-family: 'Libre Baskerville', serif;
+  font-size: smaller;
+  color: $lighterText;
+}
+
+
+// MENU BUTTON
+.btn.button-unstyled.menu-button {
+  float: right;
+  color: $green;
+  text-transform: uppercase;
+  font-family: 'Lalezar';
+}
+
+
+// Navigation - Mobile
+.nav-list {
+  margin-top: 0;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.nav-list>li {
+  display: inline;
+}
+
+.nav-list>li+li {
+  margin-left: 1rem;
+}
+
+ul.position-list {
+  padding: 0;
+
+  li {
+    display: inline-flex;
+  }
+
+  li+li {
+    margin-left: 1rem;
+  }
+}
+
+
+
+// Link Styling
+a.nav-link {
+  display: inline-block;
+  padding: 3px 4px;
+  // font-family: 'Libre Baskerville', serif;
+  color: $green;
+  text-decoration: none;
+
+  // to preserve spacing
+  border-bottom: solid 1px transparent;
+}
+
+a.nav-link:hover {
+  border-bottom: solid 1px $green;
+  transition: all 250ms;
+}
+
+a.nav-link.active,
+a.nav-link.active:hover {
+  // color: $white;
+  border-bottom: solid 1px $green;
+}
+
+
+// Hide Desktop
+.desktop-menu,
+.header-tagline {
+  display: none;
+}
+
+@media screen and (min-width: 700px) {
+
+  .header-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 0 2em;
+    text-align: initial;
+  }
+
+
+  .header-grid>div {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    // font-size: initial;
+  }
+
+
+  .header-title {
+    font-size: 24px;
+    color: $white;
+  }
+
+  nav.desktop-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
+  .nav-list {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .nav-list>li {
+    margin-bottom: 0;
+    display: inline-block;
+  }
+
+  .nav-list>li+li {
+    margin-left: 1em;
+  }
+
+  .header-tagline {
+    display: initial;
+  }
+
+  // Hide Mobile
+  .mobile-menu,
+  .btn.button-unstyled.menu-button {
+    display: none
+  }
+
+
+}
+
+
+// footer {
+//   position: relative;
+//   overflow: hidden;
+
+//   font-family: 'Libre Baskerville', serif;
+//   // background-color: $primaryColor;
+//   border-top: $lighterGray solid 2px;
+//   color: $lighterText;
+//   padding: 40px 0;
+//   font-size: 16px;
+// }
+
+// // footer p,
+// // footer li a,
+// // footer .footer-logo,
+// // footer h4 span {
+// //   background-color: $primaryColor;
+// // }
+
+// footer>.container {
+//   z-index: 1;
+// }
+
+// .footer-title:first-child {
+//   color: $lighterText
+// }
+
+// .links-title {
+//   color: $lighterText;
+// }
+
+// .footer-logo {
+//   min-height: 70px;
+//   font-size: 36px;
+// }
+
+// .footer-list li {
+//   margin-bottom: 15px;
+//   text-transform: capitalize;
+// }
+
+// .footer-list li:last-child {
+//   margin-bottom: 0;
+// }
+
+// .footer-list li a {
+//   position: relative;
+//   font-size: 16px;
+//   font-weight: 400;
+//   color: $lighterText;
+// }
+
+// .footer-list .list-inline li {
+//   display: inline-block;
+//   margin: 0 10px;
+// }
+
+// .copyright span {
+//   font-size: small;
+//   color: $lighterText;
+//   // background-color: $primaryColor;
+//   padding: 5px;
+//   border-radius: 5px;
+// }
+
+// // .copyright span a {
+// //   // color: $secondaryColor;
+// // }

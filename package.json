@@ -1,0 +1,62 @@
+{
+  "name": "mm-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/index.js",
+  "proxy": "http://localhost:8080",
+  "scripts": {
+    "start": "REACT_APP_BUILD_TIME=$(date +%s) react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "node server/index.js",
+    "dev": "NODE_ENV=development nodemon --inspect server/index.js",
+    "build-prod": "REACT_APP_BUILD_TIME=$(date +%s) react-scripts build && docker build . -t magrelo/mm-bot && docker push magrelo/mm-bot",
+    "build-staging": "REACT_APP_BUILD_TIME=$(date +%s) react-scripts build && docker build . -t magrelo/mm-bot-staging && docker push magrelo/mm-bot-staging",
+    "ssh": "echo 'not setup'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^4.2.0",
+    "mongoose": "^5.11.8",
+    "morgan": "^1.10.0",
+    "node-fetch": "^2.6.1",
+    "node-sass": "^4.14.1",
+    "nodemon": "^2.0.6",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "^4.0.1",
+    "socket.io": "^3.0.4",
+    "socket.io-client": "^3.0.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "nodemonConfig": {
+    "watch": [
+      "server/*"
+    ],
+    "delay": "2500",
+    "ext": "js json"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
