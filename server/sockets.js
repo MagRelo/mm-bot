@@ -1,14 +1,15 @@
-// var io = require('socket.io');
+const { handleClap } = require('./controllers/game');
+const { announce } = require('./controllers/listener');
+const { getOrCreateUser } = require('./controllers/user');
 
+// TEST = ENV
 const url = 'http://localhost:3000';
 
-exports.startIo = function startIo(http) {
-  // server-side
+exports.startIo = function (http) {
   const io = require('socket.io')(http, {
     cors: {
       origin: url,
       methods: ['GET', 'POST'],
-      // allowedHeaders: ['my-custom-header'],
       credentials: true,
     },
   });
@@ -17,15 +18,32 @@ exports.startIo = function startIo(http) {
   // game.use(gameAuth);
   game.on('connection', (socket) => {
     // events
-
-    socket.on('clap', (data) => {
-      // GameController.handleUpdate(game, socket, data
-      console.log(data);
+    socket.on('join', async (data) => {
+      if (!data.discordId) {
+        return console.log('error: no id');
+        // TODO: return error
+      }
+      const user = await getOrCreateUser({ discordId: data.discordId });
+      socket.emit('update', user);
     });
-    // socket.on('proposal', (data) => {
-    //   // GameController.handlePropsal(game, socket, data);
-    //   console.log(data);
-    // });
+
+    socket.on('clap', async (data) => {
+      //
+      const user = await handleClap(game, socket, data);
+
+      let announcement = '';
+      if (data.amount === 1) {
+        announcement = user.username + ' clapped!';
+      } else {
+        announcement = user.username + ` clapped ${data.amount}X!`;
+      }
+
+      // bot announcement in channel
+      announce(announcement);
+
+      // console.log('sockets', data);
+    });
+
     // socket.on('vote', (data) => {
     //   // GameController.handleVote(game, socket, data);
     //   console.log(data);

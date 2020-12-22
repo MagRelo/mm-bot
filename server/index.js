@@ -56,3 +56,8 @@ var server = app.listen(8080, function () {
 // Sockets
 const sockets = require('./sockets.js');
 sockets.startIo(server);
+
+// initiateGame
+require('./controllers/listener');
+const { initiateGame } = require('./controllers/game');
+initiateGame();

@@ -1,21 +1,8 @@
 import React, { useState, useEffect } from 'react';
-// import { Link, globalHistory, useLocation } from '@reach/router';
-// import { createConnection } from 'mongoose';
 
-export default ConsensusButton;
-function ConsensusButton({ active, type, title, cost, payoff, threshold }) {
-  // params:
-  // - active
-  // - type
-  // - title
-  // - cost
-  // - payoff
-  // - threshold
+import { sendClap } from '../sockets';
 
-  // states:
-  // - inactive => can propose
-  // - active => can vote
-
+export default function ClapButton({ roomNumber, userId, userName }) {
   // const { activeSession, user } = useContext(AuthContext);
   // const [active, setActive] = useState(active);
 
@@ -25,9 +12,17 @@ function ConsensusButton({ active, type, title, cost, payoff, threshold }) {
   //   });
   // }, []);
 
+  const amount = 10;
+
+  function clap() {
+    sendClap({ roomNumber, userId, userName, amount });
+  }
+
   return (
     <div style={{ position: 'sticky' }}>
-      <button className="clap-button">CLAP</button>
+      <button onClick={clap} className="clap-button">
+        CLAP
+      </button>
     </div>
   );
 }

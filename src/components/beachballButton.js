@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-// import { Link, globalHistory, useLocation } from '@reach/router';
-// import { createConnection } from 'mongoose';
 
+// button styles
 import beachball from '../images/beachball.svg';
-// import BeachBall from '';
+const defaultButtonStyle = { border: 'dashed 1px  #ddd' };
+const activeButtonStyle = { backgroundImage: `url(${beachball})` };
 
 export default ConsensusButton;
 function ConsensusButton({ active, type, title, cost, payoff, threshold }) {
   // params:
   // - active
+
   // - type
   // - title
   // - cost
@@ -29,8 +30,16 @@ function ConsensusButton({ active, type, title, cost, payoff, threshold }) {
       <button
         disabled={!active}
         className="beachball-button"
-        style={{ backgroundImage: `url(${beachball})` }}
+        style={active ? activeButtonStyle : defaultButtonStyle}
       ></button>
+
+      <div className="beachball-caption">
+        {active ? (
+          <span>Hit the beachball! </span>
+        ) : (
+          <span>When the beachball comes to you, hit it!</span>
+        )}
+      </div>
     </div>
   );
 }

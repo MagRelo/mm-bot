@@ -1,36 +1,39 @@
 $white: #ffffff;
 $black: #1e1e1e;
 
-$primaryLight: #1e1e1e;
-$primaryColor: #303c6c;
-
-// DK
-$primaryHighlight: #0eb1d2;
-$green: #61b510;
-$blue: #1d84b5;
-$gray: #8f8f8f;
-
-$red: #ff7579;
-$purple: #ba6ad9;
+$green: #00FF00;
 
 
-// $lightGray: #c7d6d5;
-$lightGray: lighten($color: $black,
-  $amount: 74,
-);
-$lighterGray: lighten($color: $black,
-  $amount: 85,
-);
+// $primaryLight: #1e1e1e;
+// $primaryColor: #303c6c;
 
-$darkText: lighten($color: $black,
-  $amount: 10,
-);
-$lightText: lighten($color: $darkText,
-  $amount: 10,
-);
-$lighterText: lighten($color: $darkText,
-  $amount: 25,
-);
+// // DK
+// $primaryHighlight: #0eb1d2;
+// $green: #61b510;
+// $blue: #1d84b5;
+// $gray: #8f8f8f;
+
+// $red: #ff7579;
+// $purple: #ba6ad9;
+
+
+// // $lightGray: #c7d6d5;
+// $lightGray: lighten($color: $black,
+//   $amount: 74,
+// );
+// $lighterGray: lighten($color: $black,
+//   $amount: 85,
+// );
+
+// $darkText: lighten($color: $black,
+//   $amount: 10,
+// );
+// $lightText: lighten($color: $darkText,
+//   $amount: 10,
+// );
+// $lighterText: lighten($color: $darkText,
+//   $amount: 25,
+// );
 
 // https://coolors.co/2ca58d-ff9b42-57abf2-605856-274156
 // $green: #2CA58D;
