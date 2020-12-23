@@ -3,7 +3,7 @@ import { initiateSocket, disconnectSocket, subscribeToChat } from './sockets';
 
 import { getParams, formatCurrency } from './components/util';
 
-import ConsensusButton from './components/consensusButton';
+// import ConsensusButton from './components/consensusButton';
 import BeachBallButton from './components/beachballButton';
 import ClapButton from './components/clapButton';
 

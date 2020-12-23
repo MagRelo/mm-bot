@@ -33,3 +33,15 @@ const GameSchema = new mongoose.Schema(
 );
 
 exports.GameModel = mongoose.model('Game', GameSchema);
+
+const BeachBallSchema = new mongoose.Schema(
+  {
+    targetUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    expires: Date,
+    hitBallTime: Date,
+    didHit: Boolean,
+  },
+  { timestamps: true, strict: false }
+);
+
+exports.BeachBallModel = mongoose.model('BeachBall', BeachBallSchema);
