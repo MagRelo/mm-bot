@@ -1,21 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import useDimensions from 'react-use-dimensions';
 
 import { sendClap } from '../sockets';
 import useLongPress from './longpress';
 
 export default function ClapButton({ roomNumber, userId, userName }) {
-  // const [longPressCount, setlongPressCount] = useState(0);
-  // const [clickCount, setClickCount] = useState(0);
-  const [clickAmount, setClickAmount] = useState(0);
-  const [visible, setVisible] = useState(false);
-
   const [ref, { x, y, width }] = useDimensions();
 
   const onLongPress = () => {
     console.log('longclick triggered');
 
-    setClickAmount(10);
     sendClap({ roomNumber, userId, userName, amount: 10 });
     explode(x + width / 2, y + width / 2, width);
   };
@@ -23,7 +17,6 @@ export default function ClapButton({ roomNumber, userId, userName }) {
   const onClick = (e) => {
     console.log('click triggered');
 
-    setClickAmount(10);
     sendClap({ roomNumber, userId, userName, amount: 1 });
     explode(x + width / 2, y + width / 2, width);
   };
