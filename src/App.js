@@ -25,9 +25,6 @@ function App() {
 
     subscribeToChat((err, data) => {
       if (err) return console.log(err);
-
-      console.log(data);
-      // update user
       setUser(data);
     });
 

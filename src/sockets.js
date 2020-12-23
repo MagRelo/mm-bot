@@ -14,7 +14,7 @@ export const subscribeToChat = (cb) => {
   if (!socket) return true;
 
   socket.on('update', (msg) => {
-    console.log('Websocket event received!');
+    // console.log('Websocket event received!');
     return cb(null, msg);
   });
 };
