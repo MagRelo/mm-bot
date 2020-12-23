@@ -40,9 +40,9 @@ exports.fund = async function (discordId, amount) {
 };
 
 exports.getOrCreateUser = async function (discordUser) {
-  // console.log(discordUser);
+  console.log(discordUser);
 
-  const user = await UserModel.findOne({ discordId: discordUser.discordId });
+  const user = await UserModel.findOne({ discordId: discordUser.id });
 
   if (!user) {
     const newUser = new UserModel(discordUser);
