@@ -2,7 +2,17 @@ import io from 'socket.io-client';
 let socket;
 
 export const initiateSocket = ({ room, discordId }) => {
-  socket = io('http://localhost:8080/game');
+  // select URL for env
+  let URL = 'http://localhost:8080/game';
+  if (process.env.NODE_ENV === 'production') {
+    URL = process.env.REACT_APP_URL;
+  }
+
+  console.log();
+
+  // connect
+  socket = io(URL);
+
   console.log(`Connecting socket...`);
   if (socket && room) {
     console.log('socket', !!socket);

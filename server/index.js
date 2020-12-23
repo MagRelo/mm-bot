@@ -31,6 +31,7 @@ mongoose.connection.on('error', function (error) {
 });
 
 // Server
+const express = require('express');
 const app = require('express')();
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
@@ -43,6 +44,11 @@ app.use(
       // remove the frontend dev server's 'json' calls from the console output
       return req.originalUrl.indexOf('json') > 0;
     },
+  })
+);
+app.use(
+  express.static('build', {
+    index: false,
   })
 );
 

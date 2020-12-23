@@ -37,7 +37,7 @@ exports.setTarget = async function (discordUser) {
 exports.getUserRemote = async function (discordUser) {
   const user = await getOrCreateUser(discordUser);
   const baseURL = process.env.URL || 'https://www.google.com/';
-  return baseURL + '?user=' + user.discordId;
+  return baseURL + '?accessCode=' + user.discordId;
 };
 
 exports.initiateGame = async function () {
