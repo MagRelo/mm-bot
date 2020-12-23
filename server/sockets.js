@@ -3,7 +3,7 @@ const { announce } = require('./controllers/listener');
 const { getOrCreateUser } = require('./controllers/user');
 
 // TEST = ENV
-const url = 'http://localhost:3000';
+const url = process.env.URL;
 
 exports.startIo = function (http) {
   const io = require('socket.io')(http, {

@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const mmbotToken =
-  'Nzg4ODIxODM3NzQ3ODQ3MTY4.X9pFlQ.vZt0XoANgH9mnjJIjc9uscKcqzQ';
+const mmbotToken = process.env.DISCORD_KEY;
 
 const { getUserRemote, setTarget } = require('./game');
 

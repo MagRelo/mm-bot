@@ -53,6 +53,10 @@ var server = app.listen(8080, function () {
   console.log('App running on port 8080');
 });
 
+// page routing
+const routesApi = require('./routes');
+app.use('/', routesApi);
+
 // Sockets
 const sockets = require('./sockets.js');
 sockets.startIo(server);
