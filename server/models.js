@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       default: 100,
     },
+    clap: Number,
   },
   { timestamps: true, strict: false }
 );
