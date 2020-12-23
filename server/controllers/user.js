@@ -9,9 +9,9 @@ const reactions = {
   },
 };
 
-exports.spend = async function (memberId, reaction, amount) {
+exports.spend = async function (discordId, reaction, amount) {
   return await UserModel.findOneAndUpdate(
-    { discordUser: memberId },
+    { discordId: discordId },
     {
       $inc: { mmBalance: -1 * reactions[reaction].cost * amount },
     },
@@ -19,9 +19,9 @@ exports.spend = async function (memberId, reaction, amount) {
   );
 };
 
-exports.receive = async function (memberId, reaction, amount) {
+exports.receive = async function (discordId, reaction, amount) {
   return await UserModel.findOneAndUpdate(
-    { discordUser: memberId },
+    { discordId: discordId },
     {
       $inc: { [reaction]: amount },
     },
@@ -29,9 +29,9 @@ exports.receive = async function (memberId, reaction, amount) {
   );
 };
 
-exports.fund = async function (memberId, amount) {
+exports.fund = async function (discordId, amount) {
   return await UserModel.findOneAndUpdate(
-    { discordUser: memberId },
+    { discordId: discordId },
     {
       $inc: { mmBalance: amount },
     },

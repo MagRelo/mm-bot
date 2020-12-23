@@ -4,20 +4,20 @@ import useDimensions from 'react-use-dimensions';
 import { sendClap } from '../sockets';
 import useLongPress from './longpress';
 
-export default function ClapButton({ roomNumber, userId, userName }) {
+export default function ClapButton({ roomNumber, discordId, userName }) {
   const [ref, { x, y, width }] = useDimensions();
 
   const onLongPress = () => {
     console.log('longclick triggered');
 
-    sendClap({ roomNumber, userId, userName, amount: 10 });
+    sendClap({ roomNumber, discordId, userName, amount: 10 });
     explode(x + width / 2, y + width / 2, width);
   };
 
   const onClick = (e) => {
     console.log('click triggered');
 
-    sendClap({ roomNumber, userId, userName, amount: 1 });
+    sendClap({ roomNumber, discordId, userName, amount: 1 });
     explode(x + width / 2, y + width / 2, width);
   };
 

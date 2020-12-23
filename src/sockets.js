@@ -35,6 +35,6 @@ export const disconnectSocket = () => {
 };
 
 // send
-export const sendClap = ({ roomNumber, userId, userName, amount }) => {
-  if (socket) socket.emit('clap', { roomNumber, userId, userName, amount });
+export const sendClap = ({ roomNumber, discordId, userName, amount }) => {
+  if (socket) socket.emit('clap', { roomNumber, discordId, userName, amount });
 };

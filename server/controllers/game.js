@@ -5,13 +5,12 @@ const { GameModel } = require('../models');
 // clap
 exports.handleClap = async function (game, socket, data) {
   try {
-    // console.log('clap', data);
-
+    // get game
     const game = await GameModel.findOne({}).populate('targetUser');
 
     // decrease use
-    const updatedUser = await spend(data.userId, 'clap', data.amount);
-    await receive(game.targetUser.discordUserId, 'clap', data.amount);
+    const updatedUser = await spend(data.discordId, 'clap', data.amount);
+    await receive(game.targetUser.discordId, 'clap', data.amount);
 
     // update client
     socket.emit('update', updatedUser);
