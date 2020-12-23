@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import beachball from '../images/mm_ball_image.png';
 const defaultButtonStyle = { border: 'dashed 1px  #ddd' };
 const activeButtonStyle = {
-  background: `url(${beachball}) no-repeat center center fixed`,
+  background: `url(${beachball}) no-repeat center center/contain`,
 };
 
 export default ConsensusButton;
