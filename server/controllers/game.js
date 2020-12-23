@@ -53,3 +53,14 @@ exports.initiateGame = async function () {
   await newGame.save();
   console.log('new game');
 };
+
+exports.getLeaderboard = async function () {
+  console.log('updating leaderboard');
+  const users = await UserModel.find({clap: {$ne: null}}).sort({clap: -1})
+  ret = ""
+  users.forEach(user => {
+    console.log(user)
+    ret += user.username + ": " + user.clap;
+  })
+  return ret;
+};
