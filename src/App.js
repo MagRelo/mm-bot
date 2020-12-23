@@ -46,7 +46,7 @@ function App() {
             <div className="crowd-actions-grid">
               <div className="beach-ball-section">
                 <BeachBallButton
-                  active={false}
+                  active={true}
                   title="Wave!"
                   type="wave"
                   cost="10"
@@ -69,7 +69,7 @@ function App() {
 
             <div className="user-actions-grid">
               <div className="clap-section">
-                <ClapButton userName={user.name} userId={user.userId} />
+                <ClapButton userName={user.name} discordId={user.discordId} />
               </div>
             </div>
           </div>

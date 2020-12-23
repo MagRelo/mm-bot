@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 // button styles
-import beachball from '../images/beachball.svg';
+import beachball from '../images/mm_ball_image.png';
 const defaultButtonStyle = { border: 'dashed 1px  #ddd' };
-const activeButtonStyle = { backgroundImage: `url(${beachball})` };
+const activeButtonStyle = {
+  background: `url(${beachball}) no-repeat center center fixed`,
+};
 
 export default ConsensusButton;
 function ConsensusButton({ active, type, title, cost, payoff, threshold }) {
