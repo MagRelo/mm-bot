@@ -68,6 +68,6 @@ const sockets = require('./sockets.js');
 sockets.startIo(server);
 
 // initiateGame
-require('./controllers/listener');
+// require('./controllers/listener');
 const { initiateGame } = require('./controllers/game');
 initiateGame();

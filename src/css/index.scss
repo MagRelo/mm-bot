@@ -128,8 +128,8 @@ button {
   // background: url(/image/btn.png) no-repeat;
   cursor: pointer;
   border: none;
-  height: 33vh;
-  width: 33vh;
+  height: 20vh;
+  width: 20vh;
   border-radius: 50%;
 }
 
@@ -144,36 +144,56 @@ button {
   // background: url(/image/btn.png) no-repeat;
   cursor: pointer;
   border: none;
-
   position: relative;
-
 
   border-radius: 50%;
   height: 24vh;
   width: 24vh;
 
-  background: #fff;
-  color: #aaa;
+
   font-size: 32px;
   font-weight: bold;
   letter-spacing: 0.15rem;
-  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 3px #fff;
+
+  color: $white;
+  background: $black;
+  box-shadow: 0px 4px $green, inset 0px 2px 3px #555;
 }
 
-.clap-button:before {
-  display: block;
-  position: absolute;
-  top: -18px;
-  left: -18px;
-  bottom: -18px;
-  right: -18px;
-  z-index: -1;
-  border-radius: 50%;
+// .clap-button:before {
+//   display: block;
+//   position: absolute;
+//   top: -18px;
+//   left: -18px;
+//   bottom: -18px;
+//   right: -18px;
+//   z-index: -1;
+//   border-radius: 50%;
 
-  content: "";
-  background: #fff;
-  border-top: 2px solid #ddd;
-  box-shadow: inset 0px 8px 48px #ddd;
+//   content: "";
+//   background: #fff;
+//   border-top: 2px solid #ddd;
+//   box-shadow: inset 0px 8px 48px #ddd;
+// }
+
+.clap-button:focus {
+  outline: 0;
+}
+
+.clap-label {
+  min-height: 32px;
+  margin-bottom: 12px;
+  color: $black;
+  text-shadow: 1px 1px $green;
+
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 0.15rem;
+
+  .emoji {
+    text-shadow: none;
+  }
+
 }
 
 

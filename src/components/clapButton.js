@@ -1,35 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useDimensions from 'react-use-dimensions';
 
+import { useDebounce } from './util';
 import { sendClap } from '../sockets';
-import useLongPress from './longpress';
+// import useLongPress from './longpress';
 
 export default function ClapButton({ roomNumber, discordId, userName }) {
+  // get position for css animation
   const [ref, { x, y, width }] = useDimensions();
 
-  const onLongPress = () => {
-    console.log('longclick triggered');
+  const [clapCount, setClapCount] = useState(0);
+  const debouncedClapCount = useDebounce(clapCount, 900);
 
-    sendClap({ roomNumber, discordId, userName, amount: 10 });
-    explode(x + width / 2, y + width / 2, width);
-  };
+  // send after delay
+  useEffect(() => {
+    if (debouncedClapCount) {
+      // send
+      console.log('sending', debouncedClapCount);
+      // sendClap({ roomNumber, discordId, userName, amount: debouncedClapCount });
+
+      // reset
+      setClapCount(0);
+    }
+  }, [debouncedClapCount, roomNumber, discordId, userName]);
 
   const onClick = (e) => {
-    console.log('click triggered');
-
-    sendClap({ roomNumber, discordId, userName, amount: 1 });
+    // console.log('click triggered');
     explode(x + width / 2, y + width / 2, width);
+    setClapCount(clapCount + 1);
   };
-
-  const defaultOptions = {
-    shouldPreventDefault: true,
-    delay: 800,
-  };
-  const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
 
   return (
     <div style={{ position: 'sticky' }}>
-      <button {...longPressEvent} ref={ref} className="clap-button">
+      <div className="clap-label">
+        {clapCount ? (
+          <span>
+            +<span className="emoji">👏</span>
+            {clapCount}
+          </span>
+        ) : null}
+      </div>
+
+      <button onClick={onClick} ref={ref} className="clap-button">
         CLAP
       </button>
     </div>
@@ -49,14 +61,16 @@ const explode = (x, y, width) => {
   let c = document.createElement('canvas');
   let ctx = c.getContext('2d');
 
-  console.log(x, y, width);
+  // console.log(x, y, width);
 
   c.style.position = 'absolute';
   c.style.left = x - 100 + 'px';
   c.style.top = y - 100 + 'px';
   c.style.pointerEvents = 'none';
+
   c.style.width = width + 'px';
   c.style.height = width + 'px';
+
   c.style.zIndex = 100;
   c.width = width * ratio;
   c.height = width * ratio;
