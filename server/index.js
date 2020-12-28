@@ -31,6 +31,7 @@ mongoose.connection.on('error', function (error) {
 });
 
 // Server
+const express = require('express');
 const app = require('express')();
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
@@ -45,6 +46,11 @@ app.use(
     },
   })
 );
+app.use(
+  express.static('build', {
+    index: false,
+  })
+);
 
 // API ROUTING
 // require('./api')(app);
@@ -53,11 +59,15 @@ var server = app.listen(8080, function () {
   console.log('App running on port 8080');
 });
 
+// page routing
+const routesApi = require('./routes');
+app.use('/', routesApi);
+
 // Sockets
 const sockets = require('./sockets.js');
 sockets.startIo(server);
 
 // initiateGame
-require('./controllers/listener');
+// require('./controllers/listener');
 const { initiateGame } = require('./controllers/game');
 initiateGame();

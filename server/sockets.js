@@ -5,7 +5,7 @@ const { getOrCreateUser } = require('./controllers/user');
 // const { BeachBallModel } = require('./models');
 
 // TEST = ENV
-const url = 'http://localhost:3000';
+const url = process.env.URL;
 
 exports.startIo = function (http) {
   const io = require('socket.io')(http, {
@@ -37,20 +37,19 @@ exports.startIo = function (http) {
     });
 
     socket.on('clap', async (data) => {
-      //
-      const user = await handleClap(game, socket, data);
+      try {
+        // update user & target
+        const user = await handleClap(data);
 
-      let announcement = '';
-      if (data.amount === 1) {
-        announcement = user.username + ' clapped!';
-      } else {
-        announcement = user.username + ` clapped ${data.amount}X!`;
+        // bot announcement in channel
+        announce(buildClapMessage(user.username, data.amount));
+
+        // update client
+        return socket.emit('update', user);
+      } catch (error) {
+        console.log(error);
+        return socket.emit('error', error);
       }
-
-      // bot announcement in channel
-      announce(announcement);
-
-      // console.log('sockets', data);
     });
 
     // socket.on('vote', (data) => {
@@ -60,29 +59,12 @@ exports.startIo = function (http) {
   });
 
   return io;
-
-  // function startBeachBall() {
-  //   const userInterval = 10 * 1000; // 15 sec between users
-  //   const expireTime = 5 * 1000; // 4 sec to hit ball
-
-  //   const userTimer = setInterval(() => {
-  //     // get users
-
-  //     var clientsList = io.sockets.adapter.rooms['general'];
-  //     // var numClients = clientsList.length;
-
-  //     console.log(clientsList);
-
-  //     // push in beachball with expiration
-  //     const expires = new Date(Date.now() + expireTime);
-  //     const newBall = BeachBallModel({
-  //       targetuser: '',
-  //       expires: expires,
-  //     });
-
-  //     // update game
-
-  //     // game.emit new 'ballholder'
-  //   }, userInterval);
-  // }
 };
+
+function buildClapMessage(user, amount) {
+  if (amount === 1) {
+    return user + ' clapped!';
+  } else {
+    return user + ` clapped ${amount}X!`;
+  }
+}

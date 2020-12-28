@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       default: 100,
     },
+    clap: Number,
   },
   { timestamps: true, strict: false }
 );
@@ -28,6 +29,7 @@ const GameSchema = new mongoose.Schema(
       enum: ['Pending', 'NewSubscriber', 'Active', 'Closed'],
       default: 'Pending',
     },
+    // statusMessageId: String,
   },
   { timestamps: true, strict: false }
 );

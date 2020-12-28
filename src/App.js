@@ -15,8 +15,6 @@ function App() {
   const params = getParams(window.location);
   const accessCode = params.accessCode;
 
-  // get from params
-  // const [room, setRoom] = useState(params.room || 'general');
   const [user, setUser] = useState(null);
 
   // connect
@@ -46,7 +44,7 @@ function App() {
             <div className="crowd-actions-grid">
               <div className="beach-ball-section">
                 <BeachBallButton
-                  active={false}
+                  active={true}
                   title="Wave!"
                   type="wave"
                   cost="10"
@@ -56,20 +54,25 @@ function App() {
               </div>
             </div>
 
-            <div className="crowd-actions-grid">
-              {/* <ConsensusButton
-              active={false}
-              title="Start a wave"
-              type="wave"
-              cost="10"
-              payoff="30"
-              threshold="60%"
-            /> */}
-            </div>
-
             <div className="user-actions-grid">
-              <div className="clap-section">
-                <ClapButton userName={user.name} userId={user.userId} />
+              <div>
+                <div className="on-stage-grid">
+                  <div className="on-stage-label">Now On Stage</div>
+                  <div className="on-stage-user">
+                    <div className="name">{user.targetUser.username}</div>
+                    <div className="balance">
+                      <span className="emoji">👏</span> {user.targetUser.clap}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="clap-section">
+                  <ClapButton
+                    userName={user.name}
+                    discordId={user.discordId}
+                    disabled={user.mmBalance < 1}
+                  />
+                </div>
               </div>
             </div>
           </div>
