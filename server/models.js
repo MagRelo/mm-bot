@@ -29,7 +29,7 @@ const GameSchema = new mongoose.Schema(
       enum: ['Pending', 'NewSubscriber', 'Active', 'Closed'],
       default: 'Pending',
     },
-    statusMessageId: String,
+    // statusMessageId: String,
   },
   { timestamps: true, strict: false }
 );

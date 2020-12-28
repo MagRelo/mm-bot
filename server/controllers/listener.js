@@ -38,24 +38,24 @@ client.on('message', async (msg) => {
     return msg.reply(newTarget.username + ' is on stage. All claps will flow to them.');
   }
 
-  if (msg.content.startsWith('samtest')) {
+  if (msg.content.startsWith('leaderboard')) {
     const leaderboardStats = await getLeaderboard();
-    const game = await getGameState();
+    // const game = await getGameState();
     const channel = client.channels.cache.find(
       (channel) => channel.name === 'general'
     );
 
-    if (game.statusMessageId) {
-      channel.messages.fetch(statusMessageId) // TODO: working here on getting messages so I can edit them
-        .then(message => console.log(message.content))
-        .catch(console.error);
-    }
+    // if (game.statusMessageId) {
+    //   channel.messages.fetch(statusMessageId) // TODO: working here on getting messages so I can edit them
+    //     .then(message => console.log(message.content))
+    //     .catch(console.error);
+    // }
 
-    const leaderboardMsg = await channel.send(leaderboardStats);
-    leaderboardMsg.pin();
-    await saveMessage(leaderboardMsg.id);
+    // const leaderboardMsg = await channel.send(leaderboardStats);
+    // leaderboardMsg.pin();
+    // await saveMessage(leaderboardMsg.id);
 
-    return;
+    return await channel.send(leaderboardStats);
   }
 });
 

@@ -64,7 +64,7 @@ exports.getLeaderboard = async function() {
   let ret = '';
   users.forEach((user) => {
     console.log(user);
-    ret += user.username + ': ' + user.clap + "/n";
+    ret += user.username + ': ' + user.clap + "\n";
   });
   return ret;
 };
