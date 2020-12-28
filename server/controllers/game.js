@@ -8,6 +8,8 @@ exports.handleClap = async function (game, socket, data) {
     // get game
     const game = await GameModel.findOne({}).populate('targetUser');
 
+    console.log(data.discordId)
+    console.log(game.targetUser.discordId)
     // decrease use
     const updatedUser = await spend(data.discordId, 'clap', data.amount);
     await receive(game.targetUser.discordId, 'clap', data.amount);
@@ -54,15 +56,42 @@ exports.initiateGame = async function () {
   console.log('new game');
 };
 
-exports.getLeaderboard = async function () {
+exports.getLeaderboard = async function() {
+  // Returns text containing top ten users by claps with emojis representing place
   console.log('updating leaderboard');
+  const places = [
+    ":first_place:",
+    ":second_place:",
+    ":potato:",
+    ":four:",
+    ":five:",
+    ":six:",
+    ":seven:",
+    ":eight:",
+    ":nine:",
+    ":keycap_ten:"
+  ]
   const users = await UserModel.find({ clap: { $ne: null } }).sort({
     clap: -1,
-  });
-  let ret = '';
-  users.forEach((user) => {
-    console.log(user);
-    ret += user.username + ': ' + user.clap;
+  }).limit(10);
+  let ret = ':money_with_wings::money_with_wings::money_with_wings:   **SCOREBOARD**   :money_with_wings::money_with_wings::money_with_wings:\n';
+  users.forEach((user, index) => {
+    ret += places[index] + "  **" + user.username + '**: ' + user.clap + "\n";
   });
   return ret;
 };
+
+exports.saveMessage = async function(messageId) {
+  GameModel.findOneAndUpdate(
+    {},
+    {
+      statuseMessageId: messageId,
+    },
+    { new: true }
+  );
+}
+
+exports.getGameState = async function() {
+  const game = await GameModel.findOne()
+  return game;
+}
