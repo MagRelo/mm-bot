@@ -32,10 +32,11 @@ exports.startIo = function (http) {
       const user = await handleClap(game, socket, data);
 
       let announcement = '';
+      let clapEmoji = ":clap:"
       if (data.amount === 1) {
-        announcement = user.username + ' clapped!';
+        announcement = `${user.username} ${clapEmoji}`;
       } else {
-        announcement = user.username + ` clapped ${data.amount}X!`;
+        announcement = `${user.username} ${clapEmoji.repeat(data.amount)}`;
       }
 
       // bot announcement in channel

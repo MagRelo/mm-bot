@@ -33,9 +33,20 @@ client.on('message', async (msg) => {
     }
 
     const newTarget = msg.mentions.users.values().next().value;
+    console.log()
     await setTarget(newTarget);
-
-    return msg.reply(newTarget.username + ' is on stage. All claps will flow to them.');
+    const avatarURL = newTarget.avatarURL();
+    const channel = client.channels.cache.find(
+      (channel) => channel.name === 'general'
+    );
+    return channel.send(`Welcome ${newTarget.username} to the stage  **+:money_with_wings:100**\n:clap: for ${newTarget.username}`);
+    // return channel.send(`Welcome ${newTarget.username} to the stage\n**+:money_with_wings:100**\n:clap: for ${newTarget.username}`, {
+    //   embed: {
+    //     thumbnail: {
+    //       url: avatarURL
+    //     }
+    //   }
+    // });
   }
 
   if (msg.content.startsWith('scoreboard')) {
