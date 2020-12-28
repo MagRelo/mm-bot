@@ -3,23 +3,17 @@ const { UserModel } = require('../models');
 const { GameModel } = require('../models');
 
 // clap
-exports.handleClap = async function (game, socket, data) {
-  try {
-    // get game
-    const game = await GameModel.findOne({}).populate('targetUser');
+exports.handleClap = async function (data) {
+  // get game
+  const game = await GameModel.findOne({}).populate('targetUser');
 
-    // decrease use
-    const updatedUser = await spend(data.discordId, 'clap', data.amount);
-    await receive(game.targetUser.discordId, 'clap', data.amount);
+  // decrease user
+  const updatedUser = await spend(data.discordId, 'clap', data.amount);
 
-    // update client
-    socket.emit('update', updatedUser);
+  // increase target
+  await receive(game.targetUser.discordId, 'clap', data.amount);
 
-    return updatedUser;
-  } catch (error) {
-    console.log(error);
-    return Promise.resolve(socket.emit('error', error));
-  }
+  return updatedUser;
 };
 
 exports.setTarget = async function (discordUser) {

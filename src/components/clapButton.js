@@ -5,7 +5,12 @@ import { useDebounce } from './util';
 import { sendClap } from '../sockets';
 // import useLongPress from './longpress';
 
-export default function ClapButton({ roomNumber, discordId, userName }) {
+export default function ClapButton({
+  roomNumber,
+  discordId,
+  userName,
+  disabled,
+}) {
   // get position for css animation
   const [ref, { x, y, width }] = useDimensions();
 
@@ -16,8 +21,8 @@ export default function ClapButton({ roomNumber, discordId, userName }) {
   useEffect(() => {
     if (debouncedClapCount) {
       // send
-      console.log('sending', debouncedClapCount);
-      // sendClap({ roomNumber, discordId, userName, amount: debouncedClapCount });
+      // console.log('sending', debouncedClapCount);
+      sendClap({ roomNumber, discordId, userName, amount: debouncedClapCount });
 
       // reset
       setClapCount(0);
@@ -41,7 +46,12 @@ export default function ClapButton({ roomNumber, discordId, userName }) {
         ) : null}
       </div>
 
-      <button onClick={onClick} ref={ref} className="clap-button">
+      <button
+        onClick={onClick}
+        ref={ref}
+        className="clap-button"
+        disabled={disabled}
+      >
         CLAP
       </button>
     </div>
