@@ -8,6 +8,8 @@ exports.handleClap = async function (game, socket, data) {
     // get game
     const game = await GameModel.findOne({}).populate('targetUser');
 
+    console.log(data.discordId)
+    console.log(game.targetUser.discordId)
     // decrease use
     const updatedUser = await spend(data.discordId, 'clap', data.amount);
     await receive(game.targetUser.discordId, 'clap', data.amount);
@@ -54,13 +56,28 @@ exports.initiateGame = async function () {
   console.log('new game');
 };
 
-exports.getLeaderboard = async function () {
+exports.getLeaderboard = async function() {
   console.log('updating leaderboard');
   const users = await UserModel.find({clap: {$ne: null}}).sort({clap: -1})
   ret = ""
   users.forEach(user => {
     console.log(user)
-    ret += user.username + ": " + user.clap;
+    ret += user.username + ": " + user.clap + "\n";
   })
   return ret;
 };
+
+exports.saveMessage = async function(messageId) {
+  GameModel.findOneAndUpdate(
+    {},
+    {
+      statuseMessageId: messageId,
+    },
+    { new: true }
+  );
+}
+
+exports.getGameState = async function() {
+  const game = await GameModel.findOne()
+  return game;
+}
