@@ -58,12 +58,14 @@ exports.initiateGame = async function () {
 
 exports.getLeaderboard = async function() {
   console.log('updating leaderboard');
-  const users = await UserModel.find({clap: {$ne: null}}).sort({clap: -1})
-  ret = ""
-  users.forEach(user => {
-    console.log(user)
-    ret += user.username + ": " + user.clap + "\n";
-  })
+  const users = await UserModel.find({ clap: { $ne: null } }).sort({
+    clap: -1,
+  });
+  let ret = '';
+  users.forEach((user) => {
+    console.log(user);
+    ret += user.username + ': ' + user.clap + "/n";
+  });
   return ret;
 };
 
