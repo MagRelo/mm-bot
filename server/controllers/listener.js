@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const mmbotToken = process.env.DISCORD_KEY;
 
-const { getUserRemote, setTarget, getLeaderboard, saveMessage, getGameState } = require('./game');
+const { getUserRemote, setTarget, getLeaderboard } = require('./game');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -35,7 +35,9 @@ client.on('message', async (msg) => {
     const newTarget = msg.mentions.users.values().next().value;
     await setTarget(newTarget);
 
-    return msg.reply(newTarget.username + ' is on stage. All claps will flow to them.');
+    return msg.reply(
+      newTarget.username + ' is on stage. All claps will flow to them.'
+    );
   }
 
   if (msg.content.startsWith('scoreboard')) {
