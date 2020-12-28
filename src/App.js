@@ -3,7 +3,7 @@ import { initiateSocket, disconnectSocket, subscribeToChat } from './sockets';
 
 import { getParams, formatCurrency } from './components/util';
 
-import ConsensusButton from './components/consensusButton';
+// import ConsensusButton from './components/consensusButton';
 import BeachBallButton from './components/beachballButton';
 import ClapButton from './components/clapButton';
 
@@ -15,8 +15,6 @@ function App() {
   const params = getParams(window.location);
   const accessCode = params.accessCode;
 
-  // get from params
-  // const [room, setRoom] = useState(params.room || 'general');
   const [user, setUser] = useState(null);
 
   // connect
@@ -56,20 +54,25 @@ function App() {
               </div>
             </div>
 
-            <div className="crowd-actions-grid">
-              {/* <ConsensusButton
-              active={false}
-              title="Start a wave"
-              type="wave"
-              cost="10"
-              payoff="30"
-              threshold="60%"
-            /> */}
-            </div>
-
             <div className="user-actions-grid">
-              <div className="clap-section">
-                <ClapButton userName={user.name} discordId={user.discordId} />
+              <div>
+                <div className="on-stage-grid">
+                  <div className="on-stage-label">Now On Stage</div>
+                  <div className="on-stage-user">
+                    <div className="name">{user.targetUser.username}</div>
+                    <div className="balance">
+                      <span className="emoji">👏</span> {user.targetUser.clap}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="clap-section">
+                  <ClapButton
+                    userName={user.name}
+                    discordId={user.discordId}
+                    disabled={user.mmBalance < 1}
+                  />
+                </div>
               </div>
             </div>
           </div>
