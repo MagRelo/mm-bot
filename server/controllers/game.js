@@ -57,14 +57,26 @@ exports.initiateGame = async function () {
 };
 
 exports.getLeaderboard = async function() {
+  // Returns text containing top ten users by claps with emojis representing place
   console.log('updating leaderboard');
+  const places = [
+    ":first_place:",
+    ":second_place:",
+    ":potato:",
+    ":four:",
+    ":five:",
+    ":six:",
+    ":seven:",
+    ":eight:",
+    ":nine:",
+    ":keycap_ten:"
+  ]
   const users = await UserModel.find({ clap: { $ne: null } }).sort({
     clap: -1,
-  });
-  let ret = '';
-  users.forEach((user) => {
-    console.log(user);
-    ret += user.username + ': ' + user.clap + "\n";
+  }).limit(10);
+  let ret = ':money_with_wings::money_with_wings::money_with_wings:   **SCOREBOARD**   :money_with_wings::money_with_wings::money_with_wings:\n';
+  users.forEach((user, index) => {
+    ret += places[index] + "  **" + user.username + '**: ' + user.clap + "\n";
   });
   return ret;
 };

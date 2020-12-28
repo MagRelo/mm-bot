@@ -38,7 +38,7 @@ client.on('message', async (msg) => {
     return msg.reply(newTarget.username + ' is on stage. All claps will flow to them.');
   }
 
-  if (msg.content.startsWith('leaderboard')) {
+  if (msg.content.startsWith('scoreboard')) {
     const leaderboardStats = await getLeaderboard();
     // const game = await getGameState();
     const channel = client.channels.cache.find(
