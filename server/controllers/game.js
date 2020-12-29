@@ -1,6 +1,9 @@
 const { spend, receive, getOrCreateUser } = require('./user');
-const { UserModel } = require('../models');
-const { GameModel } = require('../models');
+const { UserModel, GameModel, BeachBallModel } = require('../models');
+
+// timer function values
+const timeToHit = 5000;
+const timeToWait = 5000;
 
 // clap
 exports.handleClap = async function (data) {
@@ -17,7 +20,7 @@ exports.handleClap = async function (data) {
 };
 
 exports.setTarget = async function (discordUser) {
-  const user = await getOrCreateUser(discordUser);
+  const user = await getOrCreateUser({ discordUser });
   return GameModel.findOneAndUpdate(
     {},
     {
@@ -28,7 +31,7 @@ exports.setTarget = async function (discordUser) {
 };
 
 exports.getUserRemote = async function (discordUser) {
-  const user = await getOrCreateUser(discordUser);
+  const user = await getOrCreateUser({ discordUser });
   const baseURL = process.env.URL || 'https://www.google.com/';
   return baseURL + '?accessCode=' + user.discordId;
 };
@@ -87,6 +90,79 @@ exports.saveMessage = async function (messageId) {
 };
 
 exports.getGameState = async function () {
+  const game = await GameModel.findOne();
+  return game;
+};
+
+// beachball
+let hitTimer, sendTimer;
+exports.sendBeachBall = sendBeachBall;
+async function sendBeachBall(gameSocket) {
+  // find user with socket id !== null
+  const beachBallUser = await UserModel.findOne({ socketId: { $ne: null } });
+  if (!beachBallUser) {
+    // cancel?
+    return console.log('no user');
+  }
+
+  // create beachball
+  let timeObject = new Date();
+  const ballExpires = new Date(timeObject.getTime() + 5000);
+
+  const newBeachBall = new BeachBallModel({
+    targetUser: beachBallUser._id,
+    expires: ballExpires,
+  });
+  await newBeachBall.save();
+
+  // set hit timer for beachball "miss"
+  // cleanup sendTimer (someone has the ball)
+  clearTimeout(sendTimer);
+
+  // setup countdown to "miss"
+  hitTimer = setTimeout(async () => {
+    console.log('===not hit within ' + timeToHit + 'ms');
+
+    // update beachball
+    newBeachBall.didHit = false;
+    await newBeachBall.save();
+
+    // update user
+    // beachBallUser
+
+    // start sendTimer
+    startSendTimer(gameSocket);
+
+    // announce miss
+  }, timeToHit);
+
+  // update game
+  const game = await GameModel.findOneAndUpdate(
+    {},
+    { beachBallUser: newBeachBall.targetUser },
+    { new: true }
+  ).populate('targetUser beachBallUser');
+
+  // send
+  console.log('sending ball to', game);
+  return gameSocket.emit('gameUpdate', game);
+}
+
+function startSendTimer(gameSocket) {
+  clearTimeout(hitTimer);
+  sendTimer = setTimeout(async () => {
+    console.log('sending new ball');
+    sendBeachBall(gameSocket);
+  }, timeToWait);
+}
+
+exports.hitBeachBall = async function (socketId) {
+  // cancel hit timer
+
+  // check for live beachball
+
+  // - update for hit: bb & user balance
+
   const game = await GameModel.findOne();
   return game;
 };

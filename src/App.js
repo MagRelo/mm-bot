@@ -59,9 +59,9 @@ function App() {
                 <div className="on-stage-grid">
                   <div className="on-stage-label">Now On Stage</div>
                   <div className="on-stage-user">
-                    <div className="name">{user.targetUser.username}</div>
+                    {/* <div className="name">{user.targetUser.username}</div> */}
                     <div className="balance">
-                      <span className="emoji">👏</span> {user.targetUser.clap}
+                      {/* <span className="emoji">👏</span> {user.targetUser.clap} */}
                     </div>
                   </div>
                 </div>

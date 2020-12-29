@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema(
       default: 100,
     },
     clap: Number,
+    socketId: String,
   },
   { timestamps: true, strict: false }
 );
@@ -24,6 +25,7 @@ exports.UserModel = mongoose.model('User', UserSchema);
 const GameSchema = new mongoose.Schema(
   {
     targetUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    beachBallUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     status: {
       type: String,
       enum: ['Pending', 'NewSubscriber', 'Active', 'Closed'],
@@ -36,6 +38,9 @@ const GameSchema = new mongoose.Schema(
 
 exports.GameModel = mongoose.model('Game', GameSchema);
 
+//
+// Beachball
+//
 const BeachBallSchema = new mongoose.Schema(
   {
     targetUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

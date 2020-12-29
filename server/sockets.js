@@ -1,6 +1,7 @@
 const { handleClap } = require('./controllers/game');
 const { announce } = require('./controllers/listener');
-const { getOrCreateUser } = require('./controllers/user');
+const { getOrCreateUser, endUserSocket } = require('./controllers/user');
+const { sendBeachBall } = require('./controllers/game');
 
 // const { BeachBallModel } = require('./models');
 
@@ -17,9 +18,7 @@ exports.startIo = function (http) {
   });
 
   var game = io.of('/game');
-
-  // start beachball loop
-  // startBeachBall();
+  temp_startBeachBall(game);
 
   game.on('connection', (socket) => {
     // events
@@ -29,10 +28,14 @@ exports.startIo = function (http) {
         // TODO: return error
       }
 
-      // jon room
+      // join room
       socket.join(data.room);
 
-      const user = await getOrCreateUser({ discordId: data.discordId });
+      //
+      const user = await getOrCreateUser({
+        discordUser: { discordId: data.discordId },
+        socketId: socket.id,
+      });
       socket.emit('update', user);
     });
 
@@ -40,10 +43,8 @@ exports.startIo = function (http) {
       try {
         // update user & target
         const user = await handleClap(data);
-
         // bot announcement in channel
         announce(buildClapMessage(user.username, data.amount));
-
         // update client
         return socket.emit('update', user);
       } catch (error) {
@@ -52,14 +53,21 @@ exports.startIo = function (http) {
       }
     });
 
-    // socket.on('vote', (data) => {
-    //   // GameController.handleVote(game, socket, data);
-    //   console.log(data);
-    // });
+    // Disconnect
+    socket.on('disconnect', (reason) => {
+      endUserSocket(socket.id);
+    });
   });
 
   return io;
 };
+
+function temp_startBeachBall(gameSocket) {
+  setTimeout(async () => {
+    console.log('starting');
+    sendBeachBall(gameSocket);
+  }, 5000);
+}
 
 function buildClapMessage(user, amount) {
   if (amount === 1) {
