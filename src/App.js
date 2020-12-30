@@ -7,6 +7,8 @@ import { getParams, formatCurrency } from './components/util';
 import BeachBallButton from './components/beachballButton';
 import ClapButton from './components/clapButton';
 
+import mmLogo from './images/mm_logo.svg';
+
 // Custom List
 export const CustomListContext = React.createContext({});
 
@@ -82,7 +84,7 @@ function App() {
                 <div className="on-stage-grid">
                   <div className="on-stage-user">
                     <img
-                      src={user.avatarURL}
+                      src={targetUser.avatarURL}
                       alt="avatar"
                       height="40px"
                       width="40px"
@@ -103,6 +105,10 @@ function App() {
                 </div>
               </div>
             </div>
+
+            <footer>
+              <img src={mmLogo} alt="moneymail logo" height="32px" />
+            </footer>
           </div>
         </div>
       ) : null}

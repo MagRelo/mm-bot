@@ -36,7 +36,18 @@ const app = require('express')();
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+
 app.use(helmet());
+// allow discord avatars from https://cdn.discordapp.com
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'img-src': ["'self'", 'data:', 'cdn.discordapp.com'],
+    },
+  })
+);
+
 app.use(cookieParser());
 app.use(
   morgan('dev', {
