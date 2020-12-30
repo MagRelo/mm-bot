@@ -52,12 +52,13 @@ app.use(
   })
 );
 
-// API ROUTING
-// require('./api')(app);
-
 var server = app.listen(8080, function () {
   console.log('App running on port 8080');
 });
+
+// API ROUTING
+const api = require('./api');
+app.use('/api', api);
 
 // page routing
 const routesApi = require('./routes');
@@ -67,7 +68,9 @@ app.use('/', routesApi);
 const sockets = require('./sockets.js');
 sockets.startIo(server);
 
-// initiateGame
+// start bot - TODO
 // require('./controllers/listener');
+
+// initiateGame
 const { initiateGame } = require('./controllers/game');
 initiateGame();

@@ -1,15 +1,19 @@
 const { handleClap } = require('./controllers/game');
 const { announce } = require('./controllers/listener');
 const { getOrCreateUser, endUserSocket } = require('./controllers/user');
-const { sendBeachBall } = require('./controllers/game');
-
-// const { BeachBallModel } = require('./models');
+const {
+  sendBeachBall,
+  getGameState,
+  missBeachBall,
+} = require('./controllers/game');
 
 // TEST = ENV
 const url = process.env.URL;
 
+let io, game;
+
 exports.startIo = function (http) {
-  const io = require('socket.io')(http, {
+  io = require('socket.io')(http, {
     cors: {
       origin: url,
       methods: ['GET', 'POST'],
@@ -17,7 +21,8 @@ exports.startIo = function (http) {
     },
   });
 
-  var game = io.of('/game');
+  game = io.of('/game');
+
   temp_startBeachBall(game);
 
   game.on('connection', (socket) => {
@@ -31,12 +36,16 @@ exports.startIo = function (http) {
       // join room
       socket.join(data.room);
 
-      //
+      // get user
       const user = await getOrCreateUser({
-        discordUser: { discordId: data.discordId },
+        discordUser: { id: data.discordId },
         socketId: socket.id,
       });
-      socket.emit('update', user);
+
+      const game = await getGameState();
+
+      // console.log(user);
+      socket.emit('update', { user, game });
     });
 
     socket.on('clap', async (data) => {
@@ -46,15 +55,40 @@ exports.startIo = function (http) {
         // bot announcement in channel
         announce(buildClapMessage(user.username, data.amount));
         // update client
-        return socket.emit('update', user);
+        return socket.emit('update', { user });
       } catch (error) {
         console.log(error);
         return socket.emit('error', error);
       }
     });
 
+    // socket.on('hitball', async (data) => {
+    //   try {
+    //     // update user & target
+    //     const win = await hitBeachBall({ socketId: socket.id });
+
+    //     if (win) {
+    //       // cancal hit timer
+    //       clearTimeout(hitTimer);
+    //       // start send timer
+    //       startSendTimer();
+
+    //       return socket.emit('ballUpdate', { win });
+    //     } else {
+    //       console.log('too late');
+    //     }
+
+    //     // bot announcement in channel
+    //     // announce(buildClapMessage(user.username, data.amount));
+    //   } catch (error) {
+    //     console.log(error);
+    //     return socket.emit('error', error);
+    //   }
+    // });
+
     // Disconnect
     socket.on('disconnect', (reason) => {
+      console.log('disconnect', socket.id);
       endUserSocket(socket.id);
     });
   });
@@ -65,7 +99,7 @@ exports.startIo = function (http) {
 function temp_startBeachBall(gameSocket) {
   setTimeout(async () => {
     console.log('starting');
-    sendBeachBall(gameSocket);
+    sendBall();
   }, 5000);
 }
 
@@ -75,4 +109,57 @@ function buildClapMessage(user, amount) {
   } else {
     return user + ` clapped ${amount}X!`;
   }
+}
+
+// Beach Ball
+// timer function values
+const timeToHit = 5000;
+const timeToWait = 5000;
+let hitTimer, sendTimer;
+
+async function sendBall() {
+  clearTimeout(sendTimer);
+
+  // get active sockets
+  const ids = await io.of('/game').allSockets();
+  const randomSocket = getRandomItem(ids);
+
+  // create ball and update game
+  const updatedGame = await sendBeachBall(randomSocket);
+  if (!updatedGame) {
+    startSendTimer();
+    return console.log('no user, restarting...');
+  } else {
+    console.log('sending new ball:', updatedGame.beachBallUser.username);
+  }
+
+  // update all clients
+  io.of('/game').emit('update', { game: updatedGame });
+
+  // start timer for dropped ball
+  hitTimer = setTimeout(async () => {
+    console.log('hit timer expired');
+
+    //  update game
+    const game = await missBeachBall();
+
+    // start sendTimer
+    startSendTimer();
+
+    // update all clients
+    io.of('/game').emit('update', { game: game });
+  }, timeToHit);
+}
+
+function startSendTimer() {
+  clearTimeout(hitTimer);
+  console.log('waiting for', timeToWait);
+  sendTimer = setTimeout(async () => {
+    sendBall();
+  }, timeToWait);
+}
+
+function getRandomItem(set) {
+  let items = Array.from(set);
+  return items[Math.floor(Math.random() * items.length)];
 }

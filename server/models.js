@@ -12,7 +12,10 @@ const UserSchema = new mongoose.Schema(
       default: 100,
     },
     clap: Number,
-    socketId: String,
+    socketId: {
+      type: String,
+      default: '',
+    },
   },
   { timestamps: true, strict: false }
 );

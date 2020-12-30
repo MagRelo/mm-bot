@@ -16,6 +16,8 @@ function App() {
   const accessCode = params.accessCode;
 
   const [user, setUser] = useState(null);
+  const [targetUser, setTargetUser] = useState({});
+  const [beachBallUserId, setBeachBallUserId] = useState(null);
 
   // connect
   useEffect(() => {
@@ -23,7 +25,22 @@ function App() {
 
     subscribeToChat((err, data) => {
       if (err) return console.log(err);
-      setUser(data);
+      if (data.user) {
+        // console.log('user update', data.user);
+        setUser(data.user);
+      }
+
+      if (data.game && data.game.targetUser) {
+        setTargetUser(data.game.targetUser);
+      }
+
+      if (data.game && data.game) {
+        if (data.game.beachBallUser) {
+          setBeachBallUserId(data.game.beachBallUser._id);
+        } else {
+          setBeachBallUserId(null);
+        }
+      }
     });
 
     return () => {
@@ -44,24 +61,21 @@ function App() {
             <div className="crowd-actions-grid">
               <div className="beach-ball-section">
                 <BeachBallButton
-                  active={true}
-                  title="Wave!"
-                  type="wave"
-                  cost="10"
-                  payoff="30"
-                  threshold="60%"
+                  activeUser={user._id}
+                  targetUser={beachBallUserId}
+                  discordId={accessCode}
                 />
               </div>
             </div>
 
             <div className="user-actions-grid">
               <div>
+                <div className="on-stage-label">Now On Stage</div>
                 <div className="on-stage-grid">
-                  <div className="on-stage-label">Now On Stage</div>
                   <div className="on-stage-user">
-                    {/* <div className="name">{user.targetUser.username}</div> */}
+                    <div className="name">{targetUser.username}</div>
                     <div className="balance">
-                      {/* <span className="emoji">👏</span> {user.targetUser.clap} */}
+                      <span className="emoji">👏</span> {targetUser.clap}
                     </div>
                   </div>
                 </div>
