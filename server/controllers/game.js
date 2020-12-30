@@ -19,7 +19,7 @@ exports.setTarget = async function (discordUser) {
   const user = await getOrCreateUser({ discordUser });
 
   // increment balance
-  user.mmBalance += 100;
+  user.mmBalance += 50;
   await user.save();
 
   return GameModel.findOneAndUpdate(

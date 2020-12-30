@@ -3,6 +3,7 @@ const client = new Discord.Client();
 const mmbotToken = process.env.DISCORD_KEY;
 
 const { getUserRemote, setTarget, getLeaderboard } = require('./game');
+const { resetClaps } = require('./user');
 
 const admins = [
   '491657957071650828',
@@ -21,7 +22,7 @@ client.on('message', async (msg) => {
   // console.log(parsedCommand);
 
   // get user remote
-  if (parsedCommand === 'remote') {
+  if (parsedCommand === 'moneystick') {
     try {
       const URL = await getUserRemote({
         discordId: msg.author.id,
@@ -60,6 +61,20 @@ client.on('message', async (msg) => {
       (channel) => channel.name === 'general'
     );
     return await channel.send(leaderboardStats);
+  }
+
+  if (parsedCommand === 'reset') {
+    if (admins.indexOf(msg.member.id) < 0) {
+      console.log(admins.indexOf(msg.member.id));
+      return msg.reply('Access Denied!');
+    }
+
+    await resetClaps();
+    // const game = await getGameState();
+    const channel = client.channels.cache.find(
+      (channel) => channel.name === 'general'
+    );
+    return await channel.send("All user's :clap: reset to 0");
   }
 });
 

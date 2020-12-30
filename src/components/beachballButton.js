@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
 // button styles
-import beachball from '../images/mm_ball_image.png';
+import beachball from '../images/bb_gif_3.gif';
+
 const defaultButtonStyle = {
   border: 'dashed 1px  #ddd',
   background: 'inherit',
@@ -24,28 +25,25 @@ function BeachBallButton({ activeUser, targetUser, discordId }) {
   async function onClick(e) {
     console.log('send');
     setSending(true);
-    setCaption('');
+    setCaption('+10 💸');
 
-    const user = await fetch('/api/hitball?discordId=' + discordId).then(
-      (response) => {
-        if (response.status === 200) {
-          console.log('200');
-          setCaption('+10 💸');
-          resetUI();
-          return response.json();
-        } else {
-          console.log('error');
-          resetUI();
-        }
+    await fetch('/api/hitball?discordId=' + discordId).then((response) => {
+      if (response.status === 200) {
+        console.log('200');
+        resetUI();
+        return response.json();
+      } else {
+        console.log('error');
+        resetUI();
       }
-    );
+    });
 
-    console.log(user);
+    // console.log(user);
   }
 
   function resetUI() {
     setTimeout(() => {
-      console.log('reset');
+      // console.log('reset');
       setCaption('');
       setSending(false);
     }, 4000);

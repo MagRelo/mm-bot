@@ -62,7 +62,7 @@ export default function ClapButton({
 //- adapted from "Anchor Click Canvas Animation" by Nick Sheffield
 //- https://codepen.io/nicksheffield/pen/NNEoLg/
 
-const colors = ['#00FF00', '#000', 'yellow'];
+const colors = ['#00FF00', '#f748f9', 'yellow'];
 const bubbles = 25;
 
 const explode = (x, y, width) => {

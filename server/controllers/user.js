@@ -74,3 +74,7 @@ exports.endUserSocket = async function ({ socketId }) {
 
   return user;
 };
+
+exports.resetClaps = async function () {
+  return UserModel.updateMany({}, { clap: 0 }, { new: true });
+};

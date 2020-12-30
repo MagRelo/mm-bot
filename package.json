@@ -4,6 +4,7 @@
   "description": "",
   "main": "server/index.js",
   "proxy": "http://localhost:8080",
+  "homepage": "http://remote.moneymail.ai",
   "scripts": {
     "start": "REACT_APP_BUILD_TIME=$(date +%s) react-scripts start",
     "build": "react-scripts build",
