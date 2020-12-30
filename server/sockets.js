@@ -51,6 +51,11 @@ exports.startIo = function (http) {
         const user = await handleClap(data);
         // bot announcement in channel
         announce(buildClapMessage(user.username, data.amount));
+
+        // update game
+        const updatedGame = await getGameState();
+        io.of('/game').emit('update', { game: updatedGame });
+
         // update client
         return socket.emit('update', { user });
       } catch (error) {
@@ -118,6 +123,8 @@ async function sendBall() {
     //  update game
     const game = await missBeachBall();
 
+    // announce(`${updatedGame.beachBallUser.username} dropped the beachball`);
+
     // start sendTimer
     startSendTimer();
 
@@ -138,3 +145,9 @@ function getRandomItem(set) {
   let items = Array.from(set);
   return items[Math.floor(Math.random() * items.length)];
 }
+
+exports.sendUserUpdate = async function (user) {
+  console.log('sending', user);
+
+  io.of('/game').to(user.socketId).emit('update', { user });
+};

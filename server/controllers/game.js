@@ -17,6 +17,11 @@ exports.handleClap = async function (data) {
 
 exports.setTarget = async function (discordUser) {
   const user = await getOrCreateUser({ discordUser });
+
+  // increment balance
+  user.mmBalance += 100;
+  await user.save();
+
   return GameModel.findOneAndUpdate(
     {},
     {
@@ -121,7 +126,7 @@ async function sendBeachBall(userSocketId) {
 exports.hitBeachBall = async function ({ discordId }) {
   // get user
   const user = await UserModel.findOne({ discordId: discordId });
-  console.log(user);
+  // console.log(user);
 
   // check for live beachball
   let date = new Date();
@@ -131,7 +136,7 @@ exports.hitBeachBall = async function ({ discordId }) {
   });
 
   if (!liveBall) {
-    throw new Error('loss');
+    throw new Error(user);
   }
 
   // update user balance

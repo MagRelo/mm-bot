@@ -40,14 +40,25 @@ exports.fund = async function (discordId, amount) {
 };
 
 exports.getOrCreateUser = async function ({ discordUser, socketId }) {
+  // default update
+  const updateObject = { socketId: socketId };
+
+  // add avatar if present
+  if (discordUser.avatar) {
+    updateObject.avatarURL = `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`;
+  }
+
   const user = await UserModel.findOneAndUpdate(
     { discordId: discordUser.id },
-    { socketId: socketId },
+    updateObject,
     { new: true }
   );
 
   if (!user) {
-    const newUser = new UserModel({ socketId: socketId, ...discordUser });
+    const newUser = new UserModel({
+      updateObject,
+      ...discordUser,
+    });
     return newUser.save();
   }
 

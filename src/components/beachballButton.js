@@ -17,20 +17,20 @@ function BeachBallButton({ activeUser, targetUser, discordId }) {
 
   const [sending, setSending] = useState(false);
 
-  const [caption, setCaption] = useState('Watch for the beachball...');
+  const [caption, setCaption] = useState('');
 
   // const [active, setActive] = useState(true);
 
   async function onClick(e) {
     console.log('send');
     setSending(true);
-    setCaption('Sending...');
+    setCaption('');
 
     const user = await fetch('/api/hitball?discordId=' + discordId).then(
       (response) => {
         if (response.status === 200) {
           console.log('200');
-          setCaption('Nice! +10 💸');
+          setCaption('+10 💸');
           resetUI();
           return response.json();
         } else {
@@ -44,23 +44,29 @@ function BeachBallButton({ activeUser, targetUser, discordId }) {
   }
 
   function resetUI() {
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       console.log('reset');
-      setCaption('Watch for the beachball...');
+      setCaption('');
       setSending(false);
     }, 4000);
   }
 
   return (
-    <div>
+    <div style={{ position: 'sticky' }}>
+      {/* <div style={{ position: 'absolute' }}>
+        
+      </div> */}
+
       <button
         disabled={!eligible}
         onClick={onClick}
         className="beachball-button"
         style={eligible && !sending ? activeButtonStyle : defaultButtonStyle}
-      ></button>
+      >
+        {<span className="clap-label">{caption}</span>}
+      </button>
 
-      <div className="beachball-caption">
+      <div className="robot-label">
         {!sending ? (
           <React.Fragment>
             {eligible ? (
@@ -69,9 +75,7 @@ function BeachBallButton({ activeUser, targetUser, discordId }) {
               <span>Watch for the beachball...</span>
             )}
           </React.Fragment>
-        ) : (
-          <span>{caption}</span>
-        )}
+        ) : null}
       </div>
 
       {/* {JSON.stringify({ active, success, sending })} */}

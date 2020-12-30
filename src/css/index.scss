@@ -59,7 +59,7 @@ button {
 
 .page-container {
   min-height: 100vh;
-  padding: 1rem;
+  // padding: 1rem;
 
   display: grid;
   gap: 1rem;
@@ -75,22 +75,31 @@ button {
 .user-info-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr auto;
 
-  // border-bottom: solid 1px #ddd;
-  // padding: 8px 8px 1rem;
-  padding: 8px;
+  background-color: $black;
+  color: $white;
+
+  padding: 1rem;
+  // margin: -1rem -1rem -1rem;
 
   .name {
     font-size: large;
     font-weight: bold;
+    line-height: 40px;
+
+    overflow: hidden;
   }
 
 
   .balance {
     font-size: large;
     font-weight: bold;
-    padding-bottom: 4px;
+
+    margin-top: 8px;
+    line-height: 30px;
+
+    // padding-bottom: 4px;
     border-bottom: solid 2px $green;
   }
 }
@@ -101,34 +110,40 @@ button {
   // grid-template-rows: 1fr 1fr 1fr;
   align-items: center;
 
-  // .beach-ball-section {
-  //   grid-row: 1;
-  //   grid-column-start: 1;
-  //   grid-column-end: 3;
-  // }
+  padding: 2rem 0 0;
 
 
 }
 
 .on-stage-grid {
   padding: 1rem;
-  border: solid 1px gray;
-  border-radius: 1rem;
-  margin-bottom: 40px;
+  margin: 0 1rem;
+  margin-bottom: 32px;
+
+  border: #ddd solid 1px;
+  // box-shadow: $box-shadow-medium;
+  box-shadow: 2px 2px $green;
 }
 
-.on-stage-label {
+.robot-label {
   text-transform: uppercase;
+  font-family: monospace;
   color: gray;
-  margin-bottom: 8px;
+  margin: 8px 0 0;
+
+  min-height: 1.7rem;
 }
 
 .on-stage-user {
   display: grid;
   gap: 1rem;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr auto;
 
-  padding: 1rem;
+
+  // padding: 1rem;
+  line-height: 40px;
+  font-size: large;
+  font-weight: bold;
 }
 
 .user-actions-grid {
@@ -136,12 +151,6 @@ button {
   grid-template-rows: 1fr;
   grid-template-columns: 1fr;
   align-items: center;
-
-  // .clap-section {
-  //   grid-row: 2;
-  //   grid-column-start: 1;
-  //   grid-column-end: 3;
-  // }
 
 }
 
@@ -160,6 +169,7 @@ button {
 
   margin: 0 auto;
   max-width: 16rem;
+  min-height: 2rem;
 }
 
 .clap-button {

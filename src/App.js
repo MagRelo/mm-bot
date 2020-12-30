@@ -24,6 +24,8 @@ function App() {
     initiateSocket({ room: 'general', discordId: accessCode });
 
     subscribeToChat((err, data) => {
+      // console.log('update', data);
+
       if (err) return console.log(err);
       if (data.user) {
         // console.log('user update', data.user);
@@ -34,7 +36,7 @@ function App() {
         setTargetUser(data.game.targetUser);
       }
 
-      if (data.game && data.game) {
+      if (data.game) {
         if (data.game.beachBallUser) {
           setBeachBallUserId(data.game.beachBallUser._id);
         } else {
@@ -54,6 +56,12 @@ function App() {
         <div className="App">
           <div className="page-container">
             <div className="user-info-grid">
+              <img
+                src={user.avatarURL}
+                alt="avatar"
+                height="40px"
+                width="40px"
+              />
               <div className="name">{user.username}</div>
               <div className="balance">{formatCurrency(user.mmBalance)}</div>
             </div>
@@ -70,9 +78,15 @@ function App() {
 
             <div className="user-actions-grid">
               <div>
-                <div className="on-stage-label">Now On Stage</div>
+                <div className="robot-label">Now On Stage:</div>
                 <div className="on-stage-grid">
                   <div className="on-stage-user">
+                    <img
+                      src={user.avatarURL}
+                      alt="avatar"
+                      height="40px"
+                      width="40px"
+                    />
                     <div className="name">{targetUser.username}</div>
                     <div className="balance">
                       <span className="emoji">👏</span> {targetUser.clap}
