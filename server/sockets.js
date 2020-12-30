@@ -42,20 +42,16 @@ exports.startIo = function (http) {
         return socket.emit('error', error);
       }
     });
-
-    // socket.on('vote', (data) => {
-    //   // GameController.handleVote(game, socket, data);
-    //   console.log(data);
-    // });
   });
 
   return io;
 };
 
-function buildClapMessage(user, amount) {
+function buildClapMessage(username, amount) {
+  let clapEmoji = ':clap:';
   if (amount === 1) {
-    return user + ' clapped!';
+    return `${username} ${clapEmoji}`;
   } else {
-    return user + ` clapped ${amount}X!`;
+    return `${username} ${clapEmoji.repeat(amount)}`;
   }
 }
