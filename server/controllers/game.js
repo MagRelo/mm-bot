@@ -1,6 +1,5 @@
 const { spend, receive, getOrCreateUser } = require('./user');
-const { UserModel } = require('../models');
-const { GameModel } = require('../models');
+const { UserModel, GameModel, BeachBallModel } = require('../models');
 
 // clap
 exports.handleClap = async function (data) {
@@ -17,7 +16,7 @@ exports.handleClap = async function (data) {
 };
 
 exports.setTarget = async function (discordUser) {
-  const user = await getOrCreateUser(discordUser);
+  const user = await getOrCreateUser({ discordUser });
   return GameModel.findOneAndUpdate(
     {},
     {
@@ -28,7 +27,7 @@ exports.setTarget = async function (discordUser) {
 };
 
 exports.getUserRemote = async function (discordUser) {
-  const user = await getOrCreateUser(discordUser);
+  const user = await getOrCreateUser({ discordUser });
   const baseURL = process.env.URL || 'https://www.google.com/';
   return baseURL + '?accessCode=' + user.discordId;
 };
@@ -87,6 +86,65 @@ exports.saveMessage = async function (messageId) {
 };
 
 exports.getGameState = async function () {
-  const game = await GameModel.findOne();
-  return game;
+  return GameModel.findOne().populate('targetUser beachBallUser');
+};
+
+// beachball
+
+exports.sendBeachBall = sendBeachBall;
+async function sendBeachBall(userSocketId) {
+  const user = await UserModel.findOne({
+    $and: [{ socketId: userSocketId }, { socketId: { $ne: null } }],
+  });
+  if (!user) {
+    console.log('no user for id', userSocketId);
+    return null;
+  }
+
+  // create beachball
+  let timeObject = new Date();
+  const ballExpires = new Date(timeObject.getTime() + 5000);
+  const newBeachBall = new BeachBallModel({
+    targetUser: user._id,
+    expires: ballExpires,
+  });
+  await newBeachBall.save();
+
+  // update game
+  return GameModel.findOneAndUpdate(
+    {},
+    { beachBallUser: newBeachBall.targetUser },
+    { new: true }
+  ).populate('targetUser beachBallUser');
+}
+
+exports.hitBeachBall = async function ({ discordId }) {
+  // get user
+  const user = await UserModel.findOne({ discordId: discordId });
+  console.log(user);
+
+  // check for live beachball
+  let date = new Date();
+  const liveBall = await BeachBallModel.findOne({
+    targetUser: user._id,
+    expires: { $gte: date },
+  });
+
+  if (!liveBall) {
+    throw new Error('loss');
+  }
+
+  // update user balance
+  user.mmBalance += 10;
+  await user.save();
+  return user;
+};
+
+exports.missBeachBall = async function (socketId) {
+  // update game
+  return GameModel.findOneAndUpdate(
+    {},
+    { beachBallUser: null },
+    { new: true }
+  ).populate('targetUser beachBallUser');
 };

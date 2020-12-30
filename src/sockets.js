@@ -29,6 +29,20 @@ export const subscribeToChat = (cb) => {
   });
 };
 
+// export const subscribeToBall = (cb) => {
+//   if (!socket) return true;
+
+//   socket.on('ballUpdate', (msg) => {
+//     // console.log('Websocket event received!');
+//     return cb(null, msg);
+//   });
+// };
+
+// send
+// export const sendBall = ({ discordId }) => {
+//   if (socket) socket.emit('hitball', { discordId });
+// };
+
 export const disconnectSocket = () => {
   console.log('Disconnecting socket...');
   if (socket) socket.disconnect();

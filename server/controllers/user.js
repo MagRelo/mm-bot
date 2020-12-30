@@ -39,13 +39,27 @@ exports.fund = async function (discordId, amount) {
   );
 };
 
-exports.getOrCreateUser = async function (discordUser) {
-  const user = await UserModel.findOne({ discordId: discordUser.id });
+exports.getOrCreateUser = async function ({ discordUser, socketId }) {
+  const user = await UserModel.findOneAndUpdate(
+    { discordId: discordUser.id },
+    { socketId: socketId },
+    { new: true }
+  );
 
   if (!user) {
-    const newUser = new UserModel(discordUser);
+    const newUser = new UserModel({ socketId: socketId, ...discordUser });
     return newUser.save();
   }
 
   return Promise.resolve(user);
+};
+
+exports.endUserSocket = async function ({ socketId }) {
+  const user = await UserModel.findOneAndUpdate(
+    { socketId: socketId },
+    { socketId: null },
+    { new: true }
+  );
+
+  return user;
 };

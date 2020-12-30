@@ -1,12 +1,19 @@
 const { handleClap } = require('./controllers/game');
 const { announce } = require('./controllers/listener');
-const { getOrCreateUser } = require('./controllers/user');
+const { getOrCreateUser, endUserSocket } = require('./controllers/user');
+const {
+  sendBeachBall,
+  getGameState,
+  missBeachBall,
+} = require('./controllers/game');
 
 // TEST = ENV
 const url = process.env.URL;
 
+let io, game;
+
 exports.startIo = function (http) {
-  const io = require('socket.io')(http, {
+  io = require('socket.io')(http, {
     cors: {
       origin: url,
       methods: ['GET', 'POST'],
@@ -14,8 +21,10 @@ exports.startIo = function (http) {
     },
   });
 
-  var game = io.of('/game');
-  // game.use(gameAuth);
+  game = io.of('/game');
+
+  temp_startBeachBall(game);
+
   game.on('connection', (socket) => {
     // events
     socket.on('join', async (data) => {
@@ -23,24 +32,37 @@ exports.startIo = function (http) {
         return console.log('error: no id');
         // TODO: return error
       }
-      const user = await getOrCreateUser({ discordId: data.discordId });
-      socket.emit('update', user);
+
+      // join room
+      socket.join(data.room);
+
+      // get user
+      const user = await getOrCreateUser({
+        discordUser: { id: data.discordId },
+        socketId: socket.id,
+      });
+      const game = await getGameState();
+      socket.emit('update', { user, game });
     });
 
     socket.on('clap', async (data) => {
       try {
         // update user & target
         const user = await handleClap(data);
-
         // bot announcement in channel
         announce(buildClapMessage(user.username, data.amount));
-
         // update client
-        return socket.emit('update', user);
+        return socket.emit('update', { user });
       } catch (error) {
         console.log(error);
         return socket.emit('error', error);
       }
+    });
+
+    // Disconnect
+    socket.on('disconnect', (reason) => {
+      console.log('disconnect', socket.id);
+      endUserSocket(socket.id);
     });
   });
 
@@ -49,9 +71,70 @@ exports.startIo = function (http) {
 
 function buildClapMessage(username, amount) {
   let clapEmoji = ':clap:';
+
   if (amount === 1) {
     return `${username} ${clapEmoji}`;
   } else {
     return `${username} ${clapEmoji.repeat(amount)}`;
   }
+}
+
+function temp_startBeachBall(gameSocket) {
+  setTimeout(async () => {
+    console.log('starting');
+    sendBall();
+  }, 5000);
+}
+
+// Beach Ball
+// timer function values
+const timeToHit = 5000;
+const timeToWait = 5000;
+let hitTimer, sendTimer;
+
+async function sendBall() {
+  clearTimeout(sendTimer);
+
+  // get active sockets
+  const ids = await io.of('/game').allSockets();
+  const randomSocket = getRandomItem(ids);
+
+  // create ball and update game
+  const updatedGame = await sendBeachBall(randomSocket);
+  if (!updatedGame) {
+    startSendTimer();
+    return console.log('no user, restarting...');
+  } else {
+    console.log('sending new ball:', updatedGame.beachBallUser.username);
+  }
+
+  // update all clients
+  io.of('/game').emit('update', { game: updatedGame });
+
+  // start timer for dropped ball
+  hitTimer = setTimeout(async () => {
+    console.log('hit timer expired');
+
+    //  update game
+    const game = await missBeachBall();
+
+    // start sendTimer
+    startSendTimer();
+
+    // update all clients
+    io.of('/game').emit('update', { game: game });
+  }, timeToHit);
+}
+
+function startSendTimer() {
+  clearTimeout(hitTimer);
+  console.log('waiting for', timeToWait);
+  sendTimer = setTimeout(async () => {
+    sendBall();
+  }, timeToWait);
+}
+
+function getRandomItem(set) {
+  let items = Array.from(set);
+  return items[Math.floor(Math.random() * items.length)];
 }

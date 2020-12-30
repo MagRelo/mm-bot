@@ -1,47 +1,80 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // button styles
 import beachball from '../images/mm_ball_image.png';
-const defaultButtonStyle = { border: 'dashed 1px  #ddd' };
+const defaultButtonStyle = {
+  border: 'dashed 1px  #ddd',
+  background: 'inherit',
+};
 const activeButtonStyle = {
   background: `url(${beachball}) no-repeat center center/contain`,
 };
 
-export default ConsensusButton;
-function ConsensusButton({ active, type, title, cost, payoff, threshold }) {
-  // params:
-  // - active
+export default BeachBallButton;
+function BeachBallButton({ activeUser, targetUser, discordId }) {
+  const eligible = activeUser === targetUser;
+  // console.log('beachball active:', active);
 
-  // - type
-  // - title
-  // - cost
-  // - payoff
-  // - threshold
+  const [sending, setSending] = useState(false);
 
-  // states:
-  // - inactive => button inactive, disabled
-  // - active => button active, throw ball, timer
-  // useEffect(() => {
-  //   return globalHistory.listen((action) => {
-  //     setMenuOpen(false);
-  //   });
-  // }, []);
+  const [caption, setCaption] = useState('Watch for the beachball...');
+
+  // const [active, setActive] = useState(true);
+
+  async function onClick(e) {
+    console.log('send');
+    setSending(true);
+    setCaption('Sending...');
+
+    const user = await fetch('/api/hitball?discordId=' + discordId).then(
+      (response) => {
+        if (response.status === 200) {
+          console.log('200');
+          setCaption('Nice! +10 💸');
+          resetUI();
+          return response.json();
+        } else {
+          console.log('error');
+          resetUI();
+        }
+      }
+    );
+
+    console.log(user);
+  }
+
+  function resetUI() {
+    const timer = setTimeout(() => {
+      console.log('reset');
+      setCaption('Watch for the beachball...');
+      setSending(false);
+    }, 4000);
+  }
 
   return (
     <div>
       <button
-        disabled={!active}
+        disabled={!eligible}
+        onClick={onClick}
         className="beachball-button"
-        style={active ? activeButtonStyle : defaultButtonStyle}
+        style={eligible && !sending ? activeButtonStyle : defaultButtonStyle}
       ></button>
 
       <div className="beachball-caption">
-        {active ? (
-          <span>Hit the beachball! </span>
+        {!sending ? (
+          <React.Fragment>
+            {eligible ? (
+              <span>Hit the ball!</span>
+            ) : (
+              <span>Watch for the beachball...</span>
+            )}
+          </React.Fragment>
         ) : (
-          <span>When the beachball comes to you, hit it!</span>
+          <span>{caption}</span>
         )}
       </div>
+
+      {/* {JSON.stringify({ active, success, sending })} */}
     </div>
   );
 }
