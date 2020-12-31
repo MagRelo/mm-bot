@@ -28,15 +28,11 @@ exports.startIo = function (http) {
   game.on('connection', (socket) => {
     // events
     socket.on('join', async (data) => {
-      if (!data.discordId) {
-        return console.log('error: no id');
-        // TODO: return error
-      }
+      if (!data.discordId) return console.log('error: no id');
 
       // join room
       socket.join(data.room);
 
-      // get user
       const user = await getOrCreateUser({
         discordUser: { id: data.discordId },
         socketId: socket.id,
@@ -116,16 +112,11 @@ async function sendBall() {
   // update all clients
   io.of('/game').emit('update', { game: updatedGame });
 
-  // start timer for dropped ball
+  // if hitTimer runs out the ball was "dropped"
   hitTimer = setTimeout(async () => {
-    console.log('hit timer expired');
-
-    //  update game
     const game = await missBeachBall();
 
-    // announce(`${updatedGame.beachBallUser.username} dropped the beachball`);
-
-    // start sendTimer
+    // restart sendTimer
     startSendTimer();
 
     // update all clients
@@ -147,7 +138,6 @@ function getRandomItem(set) {
 }
 
 exports.sendUserUpdate = async function (user) {
-  console.log('sending', user);
-
+  // console.log('sending', user);
   io.of('/game').to(user.socketId).emit('update', { user });
 };
