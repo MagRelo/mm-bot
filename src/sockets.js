@@ -1,6 +1,10 @@
 import io from 'socket.io-client';
-let socket;
+import React, {useContext} from 'react'
 
+
+
+// setup socket connection
+let socket;
 export const initiateSocket = ({ room, discordId }) => {
   // select URL for env
   let URL = '/game';

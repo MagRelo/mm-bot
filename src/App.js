@@ -9,8 +9,11 @@ import ClapButton from './components/clapButton';
 
 import mmLogo from './images/mm_logo.svg';
 
-// Custom List
-export const CustomListContext = React.createContext({});
+// User
+export const UserContext = React.createContext({});
+let user = {}
+let beachball = {}
+
 
 function App() {
   // get URL params
@@ -53,7 +56,7 @@ function App() {
   }, [accessCode]);
 
   return (
-    <CustomListContext.Provider value={{}}>
+    <div>
       {user ? (
         <div className="App">
           <div className="page-container">
@@ -71,8 +74,7 @@ function App() {
             <div className="crowd-actions-grid">
               <div className="beach-ball-section">
                 <BeachBallButton
-                  activeUser={user._id}
-                  targetUser={beachBallUserId}
+                  isActive={user._id === beachBallUserId}
                   discordId={accessCode}
                 />
               </div>
@@ -112,7 +114,7 @@ function App() {
           </div>
         </div>
       ) : null}
-    </CustomListContext.Provider>
+    </div>
   );
 }
 

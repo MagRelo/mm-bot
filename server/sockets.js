@@ -141,3 +141,9 @@ exports.sendUserUpdate = async function (user) {
   // console.log('sending', user);
   io.of('/game').to(user.socketId).emit('update', { user });
 };
+
+
+exports.sendGameUpdate = async function ({game, user}) {
+  // console.log('sending', user);
+  io.of('/game').emit('update', { game, user });
+};

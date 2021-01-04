@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@xstate/react": "^1.2.2",
     "cookie-parser": "^1.4.5",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
@@ -34,7 +35,8 @@
     "react-scripts": "^4.0.1",
     "react-use-dimensions": "^1.2.1",
     "socket.io": "^3.0.4",
-    "socket.io-client": "^3.0.4"
+    "socket.io-client": "^3.0.4",
+    "xstate": "^4.15.3"
   },
   "eslintConfig": {
     "extends": [

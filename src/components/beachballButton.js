@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Machine, assign } from 'xstate';
+import { useMachine } from '@xstate/react';
 
 // button styles
 import beachball from '../images/bb_gif_3.gif';
-
 const defaultButtonStyle = {
   border: 'dashed 1px  #ddd',
   background: 'inherit',
@@ -11,72 +12,113 @@ const activeButtonStyle = {
   background: `url(${beachball}) no-repeat center center/contain`,
 };
 
+const beachBallMachine = Machine({
+  id: 'beachBall',
+  initial: 'active',
+  context: {
+    userId: undefined,
+    caption: '',
+  },
+  states: {
+    inactive: {
+      on: { ENABLE: 'active' },
+    },
+    active: {
+      on: { CLICK: 'loading', RESET: 'inactive' },
+    },
+    loading: {
+      invoke: {
+        id: 'hitBall',
+        src: (context, event) =>
+          fetch('/api/hitball?discordId=' + context.userId).then((response) =>
+            response.json()
+          ),
+        onDone: {
+          target: 'success',
+        },
+        onError: {
+          target: 'failure',
+        },
+      },
+      on: { RESET: 'inactive' },
+    },
+    success: {
+      after: {
+        3000: 'inactive',
+      },
+      on: { RESET: 'inactive' },
+    },
+    failure: {
+      after: {
+        3000: 'inactive',
+      },
+      on: { RESET: 'inactive' },
+    },
+  },
+});
+
 export default BeachBallButton;
-function BeachBallButton({ activeUser, targetUser, discordId }) {
-  const eligible = activeUser === targetUser;
-  // console.log('beachball active:', active);
+function BeachBallButton({ isActive, discordId }) {
+  
 
-  const [sending, setSending] = useState(false);
+// console.log(isActive && state.value === 'active')
+  return <div>{isActive ? <ActiveButton/> : <InactiveButton/>}</div>
 
-  const [caption, setCaption] = useState('');
+  // switch (currentState) {
+  //   case 'inactive':
+  //     console.log('inactive');
+  //     return <span>{isActive}</span>;
 
-  // const [active, setActive] = useState(true);
+  //   case 'active':
+  //     console.log('active');
+  //     return <span>{isActive ? 'active': null}</span>;
 
-  async function onClick(e) {
-    console.log('send');
-    setSending(true);
-    setCaption('+10 💸');
+  //   default:
+  //     break;
+  // }
+}
 
-    await fetch('/api/hitball?discordId=' + discordId).then((response) => {
-      if (response.status === 200) {
-        console.log('200');
-        resetUI();
-        return response.json();
-      } else {
-        console.log('error');
-        resetUI();
-      }
-    });
+function InactiveButton() {
+  return (
+    <div>
+      <button
+        className="beachball-button"
+        disabled={true}
+        style={defaultButtonStyle}
+      ></button>
 
-    // console.log(user);
-  }
+      <div className="robot-label">
+        <span>Watch for the beachball...</span>
+      </div>
+    </div>
+  );
+}
 
-  function resetUI() {
-    setTimeout(() => {
-      // console.log('reset');
-      setCaption('');
-      setSending(false);
-    }, 4000);
-  }
+function ActiveButton() {
+  // init state machine
+  const [state, send] = useMachine(beachBallMachine);
+  const currentState = state.value;
+  const stateActive = state.matches('active');
+  console.log('state:', state.value);
 
   return (
-    <div style={{ position: 'sticky' }}>
-      {/* <div style={{ position: 'absolute' }}>
-        
-      </div> */}
-
+    <div>
       <button
-        disabled={!eligible}
-        onClick={onClick}
         className="beachball-button"
-        style={eligible && !sending ? activeButtonStyle : defaultButtonStyle}
+        onClick={() => {
+          console.log('sending')
+          send('CLICK')
+          console.log(state.value)
+        }}
+        // style={activeButtonStyle}
       >
-        {<span className="clap-label">{caption}</span>}
+
+        {state.value}
       </button>
 
       <div className="robot-label">
-        {!sending ? (
-          <React.Fragment>
-            {eligible ? (
-              <span>Hit the ball!</span>
-            ) : (
-              <span>Watch for the beachball...</span>
-            )}
-          </React.Fragment>
-        ) : null}
+        <span>Hit the Ball!</span>
       </div>
-
-      {/* {JSON.stringify({ active, success, sending })} */}
     </div>
   );
 }

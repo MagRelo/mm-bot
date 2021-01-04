@@ -55,10 +55,7 @@ exports.getOrCreateUser = async function ({ discordUser, socketId }) {
   );
 
   if (!user) {
-    const newUser = new UserModel({
-      updateObject,
-      ...discordUser,
-    });
+    const newUser = new UserModel({ ...updateObject, ...discordUser });
     return newUser.save();
   }
 
