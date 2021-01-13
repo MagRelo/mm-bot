@@ -1,10 +1,14 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
+
+const {
+  getUserRemote,
+  setTarget,
+  getLeaderboard,
+} = require('../controllers/game');
+const { resetClaps } = require('../controllers/user');
+
 const mmbotToken = process.env.DISCORD_KEY;
-
-const { getUserRemote, setTarget, getLeaderboard } = require('./game');
-const { resetClaps } = require('./user');
-
 const channelName = process.env.DISCORD_CHANNEL || '🕺-party-chat';
 const admins = [
   '491657957071650828',
@@ -13,6 +17,11 @@ const admins = [
   '722889011550486558',
   '383461425219239936',
 ];
+
+// login bot
+if (process.env.DISCORD_START_BOT === 'true') {
+  client.login(mmbotToken);
+}
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -73,13 +82,13 @@ client.on('message', async (msg) => {
   }
 });
 
-client.login(mmbotToken);
-
 // Make announcement in channel
 exports.announce = announceInChannel;
 async function announceInChannel(message) {
   const channel = client.channels.cache.find(
     (channel) => channel.name === channelName
   );
-  channel.send(message);
+  if (channel) {
+    channel.send(message);
+  }
 }

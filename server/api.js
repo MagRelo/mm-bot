@@ -1,36 +1,32 @@
 var express = require('express');
 var router = express.Router();
 
-const { announce } = require('./controllers/listener');
+const { announce } = require('./integrations/discord');
 const { sendUserUpdate, sendGameUpdate } = require('./sockets');
-
-const { hitBeachBall, handleClap } = require('./controllers/game');
+const { handleClap, getGameState } = require('./controllers/game');
+const { hitBeachBall } = require('./controllers/beachball');
 
 router.post('/clap', async (req, res) => {
-  
   try {
     // update user & target
-    const user = await handleClap(data);
-    announce(buildClapMessage(user.username, data.amount));
+    const user = await handleClap(req.body);
+    announce(buildClapMessage(user.username, req.body.amount));
 
     // update game
     const updatedGame = await getGameState();
-    sendGameUpdate({game: updatedGame, user: user})
+    sendGameUpdate({ game: updatedGame, user: user });
 
     res.status(200).send(user);
   } catch (error) {
     console.log(error);
-
-    // announce(`${error.username} dropped the beachball`);
-
-    res.status(400).send();
+    res.status(500).send(error);
   }
 });
 
 router.post('/hitball', async (req, res) => {
-  // console.log('hit api');
   try {
-    const user = await hitBeachBall({ discordId: req.query.discordId });
+    // find beachball, update user & ball
+    const user = await hitBeachBall({ discordId: req.body.discordId });
 
     // update client
     await sendUserUpdate(user);
@@ -41,10 +37,7 @@ router.post('/hitball', async (req, res) => {
     res.status(200).send(user);
   } catch (error) {
     console.log(error);
-
-    // announce(`${error.username} dropped the beachball`);
-
-    res.status(400).send();
+    res.status(500).send(error);
   }
 });
 
@@ -53,3 +46,13 @@ router.get('*', async (req, res) => {
 });
 
 module.exports = router;
+
+function buildClapMessage(username, amount) {
+  let clapEmoji = ':clap:';
+
+  if (amount === 1) {
+    return `${username} ${clapEmoji}`;
+  } else {
+    return `${username} ${clapEmoji.repeat(amount)}`;
+  }
+}

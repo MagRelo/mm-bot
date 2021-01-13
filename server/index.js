@@ -1,8 +1,17 @@
+//
+// Server Monitoring
+//
+require('honeycomb-beeline')({
+  writeKey: '49cb083671e8dbfdcfeaaf35778af1e4',
+  dataset: 'moneystick_1',
+  serviceName: 'moneystick',
+});
+
 // *
 // load env var's
 // *
 const dotenv = require('dotenv');
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
   // load local config from .env file
   const result = dotenv.config();
   if (result.error) {
@@ -11,10 +20,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 console.log('ENV: ' + process.env.NODE_ENV);
 
+//
 // Mongoose/Mongo connection
+//
 const mongoose = require('mongoose');
 const mongoConnString = process.env.MONGODB_URL_INT;
-
 mongoose.Promise = global.Promise;
 try {
   mongoose.connect(mongoConnString, {
@@ -30,7 +40,9 @@ mongoose.connection.on('error', function (error) {
   process.exit(-1);
 });
 
+//
 // Server
+//
 const express = require('express');
 const app = require('express')();
 const helmet = require('helmet');
@@ -38,8 +50,8 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 app.use(helmet());
-// allow discord avatars from https://cdn.discordapp.com
 app.use(
+  // allow discord avatars from https://cdn.discordapp.com
   helmet.contentSecurityPolicy({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
@@ -47,7 +59,7 @@ app.use(
     },
   })
 );
-
+app.use(express.json()); //Used to parse JSON bodies
 app.use(cookieParser());
 app.use(
   morgan('dev', {
@@ -67,11 +79,11 @@ var server = app.listen(8080, function () {
   console.log('App running on port 8080');
 });
 
-// API ROUTING
+// API
 const api = require('./api');
 app.use('/api', api);
 
-// page routing
+// Page routing (serve the react app)
 const routesApi = require('./routes');
 app.use('/', routesApi);
 
@@ -79,9 +91,17 @@ app.use('/', routesApi);
 const sockets = require('./sockets.js');
 sockets.startIo(server);
 
-// start bot - TODO
-// require('./controllers/listener');
-
+//
 // initiateGame
+//
 const { initiateGame } = require('./controllers/game');
-initiateGame();
+if (process.env.GAME_START === 'true') {
+  console.log('starting game');
+  initiateGame();
+}
+
+const { startBeachBall } = require('./controllers/beachball');
+if (process.env.BEACHBALL_START === 'true') {
+  console.log('starting beachball');
+  startBeachBall();
+}

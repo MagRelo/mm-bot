@@ -1,20 +1,13 @@
 import io from 'socket.io-client';
-import React, {useContext} from 'react'
-
-
 
 // setup socket connection
 let socket;
 export const initiateSocket = ({ room, discordId }) => {
-  // select URL for env
-  let URL = '/game';
-
   // connect
-  socket = io(URL);
-
+  socket = io('/');
   console.log(`Connecting socket...`);
   if (socket && room) {
-    console.log('socket', !!socket);
+    console.log('socket', !!socket, discordId);
     socket.emit('join', { room, discordId });
   }
 };
@@ -27,20 +20,6 @@ export const subscribeToChat = (cb) => {
     return cb(null, msg);
   });
 };
-
-// export const subscribeToBall = (cb) => {
-//   if (!socket) return true;
-
-//   socket.on('ballUpdate', (msg) => {
-//     // console.log('Websocket event received!');
-//     return cb(null, msg);
-//   });
-// };
-
-// send
-// export const sendBall = ({ discordId }) => {
-//   if (socket) socket.emit('hitball', { discordId });
-// };
 
 export const disconnectSocket = () => {
   console.log('Disconnecting socket...');

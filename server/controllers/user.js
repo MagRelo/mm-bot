@@ -39,7 +39,7 @@ exports.fund = async function (discordId, amount) {
   );
 };
 
-exports.getOrCreateUser = async function ({ discordUser, socketId }) {
+async function getOrCreateUser({ discordUser, socketId }) {
   // default update
   const updateObject = { socketId: socketId };
 
@@ -60,7 +60,8 @@ exports.getOrCreateUser = async function ({ discordUser, socketId }) {
   }
 
   return Promise.resolve(user);
-};
+}
+exports.getOrCreateUser = getOrCreateUser;
 
 exports.endUserSocket = async function ({ socketId }) {
   const user = await UserModel.findOneAndUpdate(
@@ -74,4 +75,10 @@ exports.endUserSocket = async function ({ socketId }) {
 
 exports.resetClaps = async function () {
   return UserModel.updateMany({}, { clap: 0 }, { new: true });
+};
+
+exports.getUserRemote = async function (discordUser) {
+  const user = await getOrCreateUser({ discordUser });
+  const baseURL = process.env.URL || 'https://www.google.com/';
+  return baseURL + '?accessCode=' + user.discordId;
 };

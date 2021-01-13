@@ -11,9 +11,6 @@ import mmLogo from './images/mm_logo.svg';
 
 // User
 export const UserContext = React.createContext({});
-let user = {}
-let beachball = {}
-
 
 function App() {
   // get URL params
@@ -22,6 +19,8 @@ function App() {
 
   const [user, setUser] = useState(null);
   const [targetUser, setTargetUser] = useState({});
+
+  const [beachBallId, setBeachBallId] = useState(null);
   const [beachBallUserId, setBeachBallUserId] = useState(null);
 
   // connect
@@ -29,11 +28,10 @@ function App() {
     initiateSocket({ room: 'general', discordId: accessCode });
 
     subscribeToChat((err, data) => {
-      // console.log('update', data);
+      console.log(data);
 
       if (err) return console.log(err);
       if (data.user) {
-        // console.log('user update', data.user);
         setUser(data.user);
       }
 
@@ -76,6 +74,7 @@ function App() {
                 <BeachBallButton
                   isActive={user._id === beachBallUserId}
                   discordId={accessCode}
+                  beachBallId={beachBallId}
                 />
               </div>
             </div>
